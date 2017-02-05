@@ -1,0 +1,266 @@
+#
+# srelease
+#   script created to automate release management process
+#
+
+if (args[1] == "prepare") {
+  if (exists("releases/") == true) {
+    error("\`releases/\` folder already exists")
+    @(exit 1)
+
+  } else {
+    init_release()
+
+  }
+
+} else if (args[1] == "init") {
+  create_release()
+
+} else if (args[1] == "current") {
+  create_task()
+
+} else if (args[1] == "clean") {
+  clean_release()
+
+} else {
+  help()
+
+}
+
+def help() {
+  println("\nSoftware Release")
+  println("    script created to automate release management process\n\n")
+
+  prepare = text_bold("prepare")
+  current = text_bold("current")
+  init = text_bold("init")
+  clean = text_bold("clean")
+
+  println("    $prepare: initialize \`releases/\` folder with files\n")
+  println("             \033[1msrelease prepare\033[0m\n\n")
+
+  println("    $current: create task file at \`releases/current/<task>\`\n")
+  print("             \033[1msrelease current task-11\033[0m   => ")
+  println(text_blue("creates \`releases/current/task-11\`"))
+  println("\n")
+
+  println("    $init:    - fork to branch \`release/<today's date>-<postfix>\`")
+  println("             - summarize \`releases/current/*\` files to \`releases/history/<branch name>\`\n")
+  print("             \033[1msrelease init\033[0m              => ")
+  println(text_blue("forks and creates \`releases/history/2017-02-05\`"))
+  print("             \033[1msrelease init backend_team\033[0m => ")
+  println(text_blue("forks and creates \`releases/history/2017-02-05-backend_team\`"))
+  println("\n")
+
+  println("    $clean:   remove all files from \`releases/current/\` except \`.keep\`\n")
+  println("             \033[1msrelease clean\033[0m\n\n")
+
+}
+
+def clean_release() {
+  size = @(find ./releases/current | wc -l)
+
+  if (size > 2) {
+    files = @(find ./releases/current/* ! -name ".keep")
+
+    msg = ""
+
+    for(file in files) {
+      @(rm $file)
+      formatted_file = text_blue("\`$file\`")
+      msg = "$msg  $formatted_file\n"
+    }
+
+    succeed("files removed")
+    println("$msg")
+  } else {
+    current = text_blue("releases/current/")
+    succeed("\`$current\` already empty")
+  }
+
+}
+
+def create_task() {
+  task_name = args[2]
+  task_path = "releases/current/$task_name"
+  formatted_task_path = text_blue(task_path)
+
+  if (task_name == "") {
+    error("task name can't be blank")
+    @(exit 1)
+
+  } else if (exists(task_path) == true) {
+    error("task file already exists: \`$formatted_task_path\`")
+    @(exit 1)
+
+  } else {
+    @(touch $task_path)
+    succeed("task file created at \`$formatted_task_path\`")
+
+  }
+}
+
+def create_release() {
+
+  #
+  # .git folder exists
+  #
+
+  if (exists(".git/") == false) {
+    error("git repository not initialised")
+    @(exit 1)
+
+  }
+
+
+  #
+  # all changes are commited
+  #
+
+  if (@(git status -s) != "") {
+    error("make sure all changes are commited")
+    @(exit 1)
+
+  }
+
+  #
+  # define branches names, current and release
+  #
+
+  current_branch = @(git rev-parse --abbrev-ref HEAD)
+
+  release_branch = @(date +%Y-%m-%d)
+
+  postfix = args[2]
+  if (postfix != "") {
+    release_branch = "$release_branch-$postfix"
+  }
+
+
+  #
+  # chech if release file exists
+  #
+
+  release_file_path = "releases/history/$release_branch"
+  formatted_release_file_path = text_blue(release_file_path)
+
+  if (exists(release_file_path) == true) {
+    error("release file already exists: \`$formatted_release_file_path\`")
+    @(exit 1)
+
+  }
+
+
+  #
+  # fork to release branch
+  #
+
+  if (@(git branch | grep $release_branch) != "") {
+    error("branch $release_branch already exist")
+    @(exit 1)
+
+  }
+
+  is_branch_created = @(git checkout -b $release_branch || echo "no")
+
+  if (is_branch_created == "no") {
+    error("can't create branch $release_branch")
+    @(exit 1)
+
+  } else {
+    info("forked from \`$current_branch\` to \`$release_branch\`")
+
+  }
+
+  #
+  # fulfill release_notes var
+  #
+
+  release_files = @(ls "releases/current")
+
+  release_notes = ""
+
+  for(file in release_files) {
+    file_path = "releases/current/$file"
+    content_lines = @(cat $file_path | tr "w" "\n")
+
+    release_notes = "$release_notes$file\n"
+    for(line in content_lines) {
+      release_notes = "$release_notes    $line\n"
+    }
+  }
+
+
+  #
+  # create release file
+  #
+
+  release_file_status = @(touch $release_file_path || echo "failed")
+  if (release_file_status == "failed") {
+    error("can't create release file at \`$formatted_release_file_path\`")
+    info("check \`releases/\` folder exists")
+
+    @(exit 1)
+  }
+
+  @(echo -e $release_notes >> $release_file_path)
+
+  succeed("release file created at \`$formatted_release_file_path\`")
+
+  clean = text_bold("srelease clean")
+  info("don't forget to remove \`release/current/\` files except \`.keep\`\n  or just run \`$clean\`")
+}
+
+def init_release() {
+  println("\nRelease initialisation\n")
+
+  @(mkdir "releases/")
+  @(mkdir "releases/current")
+  @(touch "releases/current/.keep")
+  @(mkdir "releases/history")
+  @(touch "releases/history/.keep")
+
+  releases_tree = @(find "./releases")
+  println(text_blue("$releases_tree"))
+  println("")
+}
+
+def error(text) {
+  msg = text_red(text)
+
+  println("")
+  println("  $msg")
+  println("")
+}
+
+def info(text) {
+  msg = text_blue(text)
+
+  println("")
+  println("  $msg")
+  println("")
+}
+
+def succeed(text) {
+  msg = text_succeed(text)
+
+  println("")
+  println("  $msg")
+  println("")
+}
+
+def text_bold(text) {
+  return "\033[1m$text\033[0m"
+}
+
+def text_red(text) {
+  return "\033[91m$text\033[0m"
+}
+
+def text_blue(text) {
+  return "\033[94m$text\033[0m"
+}
+
+def text_succeed(text) {
+  return "\033[92m$text\033[0m"
+}

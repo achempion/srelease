@@ -129,7 +129,8 @@ def create_release() {
 
   current_branch = @(git rev-parse --abbrev-ref HEAD)
 
-  release_branch = @(date +%Y-%m-%d)
+  date = @(date +%Y-%m-%d)
+  release_branch = "release/$date"
 
   postfix = args[2]
   if (postfix != "") {

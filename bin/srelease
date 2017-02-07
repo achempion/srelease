@@ -132,7 +132,8 @@ function bish_create_release () {
         exit 1;
     fi;
     local current_branch=$(git rev-parse --abbrev-ref HEAD);
-    local release_branch=$(date +%Y-%m-%d);
+    local date=$(date +%Y-%m-%d);
+    local release_branch="release/$date";
     local postfix="${args[2]}";
     if [[ "$postfix" != "" ]]; then
         local release_branch="$release_branch-$postfix";

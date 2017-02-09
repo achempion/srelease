@@ -130,19 +130,20 @@ def create_release() {
   current_branch = @(git rev-parse --abbrev-ref HEAD)
 
   date = @(date +%Y-%m-%d)
-  release_branch = "release/$date"
+  release_title = "release/$date"
 
   postfix = args[2]
   if (postfix != "") {
-    release_branch = "$release_branch-$postfix"
+    release_title = "$release_title-$postfix"
   }
 
+  release_branch = "release/$release_title"
 
   #
   # chech if release file exists
   #
 
-  release_file_path = "releases/history/$release_branch"
+  release_file_path = "releases/history/$release_title"
   formatted_release_file_path = text_blue(release_file_path)
 
   if (exists(release_file_path) == true) {

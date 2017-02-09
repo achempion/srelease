@@ -133,12 +133,13 @@ function bish_create_release () {
     fi;
     local current_branch=$(git rev-parse --abbrev-ref HEAD);
     local date=$(date +%Y-%m-%d);
-    local release_branch="release/$date";
+    local release_title="release/$date";
     local postfix="${args[2]}";
     if [[ "$postfix" != "" ]]; then
-        local release_branch="$release_branch-$postfix";
+        local release_title="$release_title-$postfix";
     fi;
-    local release_file_path="releases/history/$release_branch";
+    local release_branch="release/$release_title";
+    local release_file_path="releases/history/$release_title";
     local _39="$release_file_path";
     bish_text_blue "$_39";
     local _rv_20="$_global_retval_3";

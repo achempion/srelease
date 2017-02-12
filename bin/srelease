@@ -4,65 +4,78 @@
 # Please see https://github.com/tdenniston/bish for more information about Bish.
 
 function bish_help () {
-    local _2="\nSoftware Release";
-    stdlib_println "$_2";
-    local _3="    script created to automate release management process\n\n";
-    stdlib_println "$_3";
-    local _4="prepare";
-    bish_text_bold "$_4";
+    local _0="\nSoftware Release";
+    stdlib_println "$_0";
+    local _1="    script created to automate release management process\n\n";
+    stdlib_println "$_1";
+    local _2="prepare";
+    bish_text_bold "$_2";
     local _rv_4="$_global_retval_1";
     local prepare="$_rv_4";
-    local _5="current";
-    bish_text_bold "$_5";
+    local _3="task";
+    bish_text_bold "$_3";
     local _rv_5="$_global_retval_1";
-    local current="$_rv_5";
-    local _6="init";
-    bish_text_bold "$_6";
+    local task="$_rv_5";
+    local _4="start";
+    bish_text_bold "$_4";
     local _rv_6="$_global_retval_1";
-    local init="$_rv_6";
-    local _7="clean";
-    bish_text_bold "$_7";
+    local start="$_rv_6";
+    local _5="clean";
+    bish_text_bold "$_5";
     local _rv_7="$_global_retval_1";
     local clean="$_rv_7";
-    local _8="    $prepare: initialize \`releases/\` folder with files\n";
+    local _6="    $prepare: initialize \`releases/\` folder with files\n";
+    stdlib_println "$_6";
+    local _7="             \033[1msrelease prepare\033[0m\n\n";
+    stdlib_println "$_7";
+    local _8="    $task:    - fork to branch \`feature/<task>-<postfix>\`";
     stdlib_println "$_8";
-    local _9="             \033[1msrelease prepare\033[0m\n\n";
+    local _9="             - create task file at \`releases/current/<task>\`\n";
     stdlib_println "$_9";
-    local _10="    $current: create task file at \`releases/current/<task>\`\n";
+    local _10="             \033[1msrelease task task-11\033[0m";
     stdlib_println "$_10";
-    local _11="             \033[1msrelease current task-11\033[0m   => ";
+    local _11="                 => ";
     stdlib_print "$_11";
-    local _12="creates \`releases/current/task-11\`";
+    local _12="forks \`feature/task-11\`, creates \`releases/current/task-11\`";
     bish_text_blue "$_12";
     local _rv_8="$_global_retval_3";
     local _13="$_rv_8";
     stdlib_println "$_13";
-    local _14="\n";
+    local _14="             \033[1msrelease task task-11 create_readme\033[0m";
     stdlib_println "$_14";
-    local _15="    $init:    - fork to branch \`release/<today's date>-<postfix>\`";
-    stdlib_println "$_15";
-    local _16="             - summarize \`releases/current/*\` files to \`releases/history/<branch name>\`\n";
-    stdlib_println "$_16";
-    local _17="             \033[1msrelease init\033[0m              => ";
-    stdlib_print "$_17";
-    local _18="forks and creates \`releases/history/2017-02-05\`";
-    bish_text_blue "$_18";
+    local _15="                 => ";
+    stdlib_print "$_15";
+    local _16="forks \`feature/task-11-create_readme\`, creates \`releases/current/task-11\`";
+    bish_text_blue "$_16";
     local _rv_9="$_global_retval_3";
-    local _19="$_rv_9";
+    local _17="$_rv_9";
+    stdlib_println "$_17";
+    local _18="\n";
+    stdlib_println "$_18";
+    local _19="    $start:   - fork to branch \`release/<today's date>-<postfix>\`";
     stdlib_println "$_19";
-    local _20="             \033[1msrelease init backend_team\033[0m => ";
-    stdlib_print "$_20";
-    local _21="forks and creates \`releases/history/2017-02-05-backend_team\`";
-    bish_text_blue "$_21";
+    local _20="             - summarize \`releases/current/*\` files to \`releases/history/<branch name>\`\n";
+    stdlib_println "$_20";
+    local _21="             \033[1msrelease start\033[0m              => ";
+    stdlib_print "$_21";
+    local _22="forks and creates \`releases/history/2017-02-05\`";
+    bish_text_blue "$_22";
     local _rv_10="$_global_retval_3";
-    local _22="$_rv_10";
-    stdlib_println "$_22";
-    local _23="\n";
+    local _23="$_rv_10";
     stdlib_println "$_23";
-    local _24="    $clean:   remove all files from \`releases/current/\` except \`.keep\`\n";
-    stdlib_println "$_24";
-    local _25="             \033[1msrelease clean\033[0m\n\n";
-    stdlib_println "$_25";
+    local _24="             \033[1msrelease start backend_team\033[0m => ";
+    stdlib_print "$_24";
+    local _25="forks and creates \`releases/history/2017-02-05-backend_team\`";
+    bish_text_blue "$_25";
+    local _rv_11="$_global_retval_3";
+    local _26="$_rv_11";
+    stdlib_println "$_26";
+    local _27="\n";
+    stdlib_println "$_27";
+    local _28="    $clean:   remove all files from \`releases/current/\` except \`.keep\`\n";
+    stdlib_println "$_28";
+    local _29="             \033[1msrelease clean\033[0m\n\n";
+    stdlib_println "$_29";
 }
 
 function bish_clean_release () {
@@ -72,66 +85,59 @@ function bish_clean_release () {
         local msg="";
         for file in $files; do
             rm $file;
-            local _26="\`$file\`";
-            bish_text_blue "$_26";
-            local _rv_13="$_global_retval_3";
-            local formatted_file="$_rv_13";
+            local _30="\`$file\`";
+            bish_text_blue "$_30";
+            local _rv_14="$_global_retval_3";
+            local formatted_file="$_rv_14";
             local msg="$msg  $formatted_file\n";
         done;
-        local _27="files removed";
-        bish_succeed "$_27";
-        local _28="$msg";
-        stdlib_println "$_28";
+        local _31="files removed";
+        bish_succeed "$_31";
+        local _32="$msg";
+        stdlib_println "$_32";
     else
-        local _29="releases/current/";
-        bish_text_blue "$_29";
-        local _rv_12="$_global_retval_3";
-        local current="$_rv_12";
-        local _30="\`$current\` already empty";
-        bish_succeed "$_30";
+        local _33="releases/current/";
+        bish_text_blue "$_33";
+        local _rv_13="$_global_retval_3";
+        local current="$_rv_13";
+        local _34="\`$current\` already empty";
+        bish_succeed "$_34";
     fi;
 }
 
 function bish_create_task () {
     local task_name="${args[2]}";
+    local branch_postfix="${args[3]}";
     local task_path="releases/current/$task_name";
-    local _31="$task_path";
-    bish_text_blue "$_31";
-    local _rv_16="$_global_retval_3";
-    local formatted_task_path="$_rv_16";
-    local _33="$task_path";
-    stdlib_exists "$_33";
-    local _rv_17="$_global_retval_15";
+    local _35="$task_path";
+    bish_text_blue "$_35";
+    local _rv_18="$_global_retval_3";
+    local formatted_task_path="$_rv_18";
+    local _37="$task_path";
+    stdlib_exists "$_37";
+    local _rv_19="$_global_retval_16";
     if [[ "$task_name" == "" ]]; then
-        local _32="task name can't be blank";
-        bish_error "$_32";
+        local _36="task name can't be blank";
+        bish_error "$_36";
         exit 1;
-    elif [[ $_rv_17 -eq 1 ]]; then
-        local _34="task file already exists: \`$formatted_task_path\`";
-        bish_error "$_34";
+    elif [[ $_rv_19 -eq 1 ]]; then
+        local _38="task file already exists: \`$formatted_task_path\`";
+        bish_error "$_38";
         exit 1;
     else
+        local branch="feature/$task_name";
+        if [[ "$branch_postfix" != "" ]]; then
+            local branch="$branch-$branch_postfix";
+        fi;
+        local _39="$branch";
+        bish_fork_to "$_39";
         touch $task_path;
-        local _35="task file created at \`$formatted_task_path\`";
-        bish_succeed "$_35";
+        local _40="task file created at \`$formatted_task_path\`";
+        bish_succeed "$_40";
     fi;
 }
 
 function bish_create_release () {
-    local _36=".git/";
-    stdlib_exists "$_36";
-    local _rv_19="$_global_retval_15";
-    if [[ $_rv_19 -eq 0 ]]; then
-        local _37="git repository not initialised";
-        bish_error "$_37";
-        exit 1;
-    fi;
-    if [[ $(git status -s) != "" ]]; then
-        local _38="make sure all changes are commited";
-        bish_error "$_38";
-        exit 1;
-    fi;
-    local current_branch=$(git rev-parse --abbrev-ref HEAD);
     local date=$(date +%Y-%m-%d);
     local release_title="release/$date";
     local postfix="${args[2]}";
@@ -140,32 +146,20 @@ function bish_create_release () {
     fi;
     local release_branch="release/$release_title";
     local release_file_path="releases/history/$release_title";
-    local _39="$release_file_path";
-    bish_text_blue "$_39";
-    local _rv_20="$_global_retval_3";
-    local formatted_release_file_path="$_rv_20";
-    local _40="$release_file_path";
-    stdlib_exists "$_40";
-    local _rv_21="$_global_retval_15";
-    if [[ $_rv_21 -eq 1 ]]; then
-        local _41="release file already exists: \`$formatted_release_file_path\`";
-        bish_error "$_41";
-        exit 1;
-    fi;
-    if [[ $(git branch | grep $release_branch) != "" ]]; then
-        local _42="branch $release_branch already exist";
-        bish_error "$_42";
-        exit 1;
-    fi;
-    local is_branch_created=$(git checkout -b $release_branch || echo "no");
-    if [[ "$is_branch_created" == "no" ]]; then
-        local _43="can't create branch $release_branch";
+    local _41="$release_file_path";
+    bish_text_blue "$_41";
+    local _rv_21="$_global_retval_3";
+    local formatted_release_file_path="$_rv_21";
+    local _42="$release_file_path";
+    stdlib_exists "$_42";
+    local _rv_22="$_global_retval_16";
+    if [[ $_rv_22 -eq 1 ]]; then
+        local _43="release file already exists: \`$formatted_release_file_path\`";
         bish_error "$_43";
         exit 1;
-    else
-        local _44="forked from \`$current_branch\` to \`$release_branch\`";
-        bish_info "$_44";
     fi;
+    local _44="$release_branch";
+    bish_fork_to "$_44";
     local release_files=$(ls "releases/current");
     local release_notes="";
     for file in $release_files; do
@@ -189,62 +183,74 @@ function bish_create_release () {
     bish_succeed "$_47";
     local _48="srelease clean";
     bish_text_bold "$_48";
-    local _rv_22="$_global_retval_1";
-    local clean="$_rv_22";
+    local _rv_23="$_global_retval_1";
+    local clean="$_rv_23";
     local _49="don't forget to remove \`release/current/\` files except \`.keep\`\n  or just run \`$clean\`";
     bish_info "$_49";
 }
 
 function bish_init_release () {
-    local _50="\nRelease initialisation\n";
-    stdlib_println "$_50";
+    local _50="releases/";
+    stdlib_exists "$_50";
+    local _rv_24="$_global_retval_16";
+    if [[ $_rv_24 -eq 1 ]]; then
+        local _51="\`releases/\` folder already exists";
+        bish_error "$_51";
+        exit 1;
+    fi;
+    local _52="\nRelease initialisation\n";
+    stdlib_println "$_52";
     mkdir "releases/";
     mkdir "releases/current";
     touch "releases/current/.keep";
     mkdir "releases/history";
     touch "releases/history/.keep";
     local releases_tree=$(find "./releases");
-    local _51="$releases_tree";
-    bish_text_blue "$_51";
-    local _rv_23="$_global_retval_3";
-    local _52="$_rv_23";
-    stdlib_println "$_52";
-    local _53="";
-    stdlib_println "$_53";
+    local _53="$releases_tree";
+    bish_text_blue "$_53";
+    local _rv_25="$_global_retval_3";
+    local _54="$_rv_25";
+    stdlib_println "$_54";
+    local _55="";
+    stdlib_println "$_55";
+}
+
+function bish_fork_to () {
+    local branch="$1";
+    local _56=".git/";
+    stdlib_exists "$_56";
+    local _rv_26="$_global_retval_16";
+    if [[ $_rv_26 -eq 0 ]]; then
+        local _57="git repository not initialised";
+        bish_error "$_57";
+        exit 1;
+    fi;
+    if [[ $(git status -s) != "" ]]; then
+        local _58="make sure all changes are commited";
+        bish_error "$_58";
+        exit 1;
+    fi;
+    if [[ $(git branch | grep $branch) != "" ]]; then
+        local _59="branch $branch already exist";
+        bish_error "$_59";
+        exit 1;
+    fi;
+    local current_branch=$(git rev-parse --abbrev-ref HEAD);
+    local is_branch_created=$(git checkout -b $branch || echo "no");
+    if [[ "$is_branch_created" == "no" ]]; then
+        local _60="can't create branch $branch";
+        bish_error "$_60";
+        exit 1;
+    else
+        local _61="forked from \`$current_branch\` to \`$branch\`";
+        bish_info "$_61";
+    fi;
 }
 
 function bish_error () {
     local text="$1";
-    local _54="$text";
-    bish_text_red "$_54";
-    local _rv_25="$_global_retval_24";
-    local msg="$_rv_25";
-    local _55="";
-    stdlib_println "$_55";
-    local _56="  $msg";
-    stdlib_println "$_56";
-    local _57="";
-    stdlib_println "$_57";
-}
-
-function bish_info () {
-    local text="$1";
-    local _58="$text";
-    bish_text_blue "$_58";
-    local _rv_26="$_global_retval_3";
-    local msg="$_rv_26";
-    local _59="";
-    stdlib_println "$_59";
-    local _60="  $msg";
-    stdlib_println "$_60";
-    local _61="";
-    stdlib_println "$_61";
-}
-
-function bish_succeed () {
-    local text="$1";
     local _62="$text";
-    bish_text_succeed "$_62";
+    bish_text_red "$_62";
     local _rv_28="$_global_retval_27";
     local msg="$_rv_28";
     local _63="";
@@ -255,6 +261,34 @@ function bish_succeed () {
     stdlib_println "$_65";
 }
 
+function bish_info () {
+    local text="$1";
+    local _66="$text";
+    bish_text_blue "$_66";
+    local _rv_29="$_global_retval_3";
+    local msg="$_rv_29";
+    local _67="";
+    stdlib_println "$_67";
+    local _68="  $msg";
+    stdlib_println "$_68";
+    local _69="";
+    stdlib_println "$_69";
+}
+
+function bish_succeed () {
+    local text="$1";
+    local _70="$text";
+    bish_text_succeed "$_70";
+    local _rv_31="$_global_retval_30";
+    local msg="$_rv_31";
+    local _71="";
+    stdlib_println "$_71";
+    local _72="  $msg";
+    stdlib_println "$_72";
+    local _73="";
+    stdlib_println "$_73";
+}
+
 function bish_text_bold () {
     local text="$1";
     _global_retval_1="\033[1m$text\033[0m";
@@ -263,7 +297,7 @@ function bish_text_bold () {
 
 function bish_text_red () {
     local text="$1";
-    _global_retval_24="\033[91m$text\033[0m";
+    _global_retval_27="\033[91m$text\033[0m";
     return;
 }
 
@@ -275,25 +309,16 @@ function bish_text_blue () {
 
 function bish_text_succeed () {
     local text="$1";
-    _global_retval_27="\033[92m$text\033[0m";
+    _global_retval_30="\033[92m$text\033[0m";
     return;
 }
 
 function bish_main () {
     if [[ "${args[1]}" == "prepare" ]]; then
-        local _0="releases/";
-        stdlib_exists "$_0";
-        local _rv_34="$_global_retval_15";
-        if [[ $_rv_34 -eq 1 ]]; then
-            local _1="\`releases/\` folder already exists";
-            bish_error "$_1";
-            exit 1;
-        else
-            bish_init_release;
-        fi;
-    elif [[ "${args[1]}" == "init" ]]; then
+        bish_init_release;
+    elif [[ "${args[1]}" == "start" ]]; then
         bish_create_release;
-    elif [[ "${args[1]}" == "current" ]]; then
+    elif [[ "${args[1]}" == "task" ]]; then
         bish_create_task;
     elif [[ "${args[1]}" == "clean" ]]; then
         bish_clean_release;
@@ -306,18 +331,18 @@ function stdlib_exists () {
     local file="$1";
     test -e $file;
     stdlib_success;
-    local _rv_36="$_global_retval_35";
-    _global_retval_15="$_rv_36";
+    local _rv_38="$_global_retval_37";
+    _global_retval_16="$_rv_38";
     return;
 }
 
 function stdlib_success () {
     local rc=$(echo $?);
     if [[ $rc -eq 0 ]]; then
-        _global_retval_35=1;
+        _global_retval_37=1;
         return;
     else
-        _global_retval_35=0;
+        _global_retval_37=0;
         return;
     fi;
 }

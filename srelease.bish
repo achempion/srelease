@@ -127,7 +127,7 @@ def create_release() {
   #
 
   date = @(date +%Y-%m-%d)
-  release_title = "release/$date"
+  release_title = "$date"
 
   postfix = args[2]
   if (postfix != "") {

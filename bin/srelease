@@ -139,7 +139,7 @@ function bish_create_task () {
 
 function bish_create_release () {
     local date=$(date +%Y-%m-%d);
-    local release_title="release/$date";
+    local release_title="$date";
     local postfix="${args[2]}";
     if [[ "$postfix" != "" ]]; then
         local release_title="$release_title-$postfix";

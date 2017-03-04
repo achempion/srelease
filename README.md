@@ -2,6 +2,9 @@
 
 script created to automate release management process
 
+
+[Software Process Framework](https://github.com/achempion/software_process_framework)
+
 ## Installation
 
 script compiled from `srelease.bish` to bash script

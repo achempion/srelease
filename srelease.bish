@@ -156,7 +156,10 @@ def create_release() {
 
   fork_to(release_branch)
 
+  notes(release_file_path)
+}
 
+def notes(release_file_path) {
   #
   # fulfill release_notes var
   #
@@ -167,12 +170,21 @@ def create_release() {
 
   for(file in release_files) {
     file_path = "releases/current/$file"
-    content_lines = @(cat $file_path | tr "w" "\n")
 
-    release_notes = "$release_notes$file\n"
-    for(line in content_lines) {
-      release_notes = "$release_notes    $line\n"
+    task_description = ""
+    @(while IFS='' read -r line || [[ -n "$line" ]]; do
+task_description+="
+    $line"
+    done < $file_path)
+
+    release_notes = "$release_notes$file"
+
+    if (task_description != "") {
+      release_notes = "$release_notes$task_description"
     }
+
+    release_notes = "$release_notes\n"
+
   }
 
 
@@ -188,7 +200,7 @@ def create_release() {
     @(exit 1)
   }
 
-  @(echo -e $release_notes >> $release_file_path)
+  @(echo -e "$release_notes" > $release_file_path)
 
   succeed("release file created at \`$formatted_release_file_path\`")
 

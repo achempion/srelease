@@ -9,7 +9,7 @@ script created to automate release management process
 
 script compiled from `srelease.bish` to bash script
 
-to install clone `bin/srelease` to `/usr/local/bin/srelease`
+to install clone `bin/srelease` to `/usr/local/bin/srelease` and then `chmod +x srelease`
 
 ## Usage
 
